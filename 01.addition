@@ -1,0 +1,14 @@
+#include <PIC18F4550.h>
+
+void main(void){
+    
+    int i , j , k ;
+    TRISB = 0;
+    LATE = 0;
+    i = 0x04;
+    j = 0x05;
+    k = i + j ;
+    PORTB = k;
+    return;
+
+}
