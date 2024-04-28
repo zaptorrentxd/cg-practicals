@@ -1,0 +1,18 @@
+#include <PIC18F4550.h>
+
+void main(void) {
+
+    int i, sum;
+    sum = 0;
+
+    int arr[] = {1, 2, 3};
+
+    for (i = 0; i < 3; i++) {
+        sum += arr[i];
+    }
+
+    TRISB = 0;
+    PORTB = sum;
+    return;
+
+}
