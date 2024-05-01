@@ -1,0 +1,255 @@
+1.Array addition
+
+
+#include<pic18f4550.h>
+#include<stdio.h>
+#include<stdlib.h>
+
+void main(void){
+    int arr[]={1,2,3,4};
+    TRISB = 0;
+    int sum = 0;
+    for(int i = 0;i<4;i++){
+        sum+=arr[i];
+    }
+    PORTB=sum;
+}
+
+BUZZER
+#include <pic18f4550.h>
+
+#include <xc.h>
+int c=0;
+void __interrupt() tmr1_isr(){
+    c++;
+    if(c==1000){
+        c=0;
+        LATAbits.LATA5=~LATAbits.LATA5;
+    }
+    TMR1IF=0;
+    TMR1=53536;
+}
+void main(void) {
+    T1CON = 0x80;         
+     
+    TRISAbits.TRISA5=0;
+    LATAbits.LATA5=0;
+    TMR1IE=1;
+    TMR1IF=0;
+    GIE=1;        
+    PEIE=1;
+   
+    
+        TMR1=53536;
+        TMR1ON=1;
+        while(1);
+ 
+    return;
+}
+
+LED
+
+
+#include <pic18f4550.h>
+#include<xc.h>
+
+void delay(unsigned int time) {
+    unsigned int i, j;
+    for (i = 0; i < time; i++) {
+        for (j = 0; j < 5000; j++);
+
+    }
+}
+
+void main(void) {
+    TRISB = 0x00;
+    LATB = 0xFF;
+    while (1) //Loop forever;
+    {
+        LATB = ~LATB;
+        delay(200);
+    }
+}
+
+
+
+LCD
+
+
+
+#include <pic18f4550.h>
+#include<xc.h>
+#define LCD_EN LATAbits.LA1
+#define LCD_RS LATAbits.LA0
+#define LCDPORT LATB
+void lcd_delay(unsigned int time)
+{
+unsigned int i , j ;
+ for(i = 0; i < time; i++)
+ {
+ for(j=0;j<100;j++);
+ }
+}
+void SendInstruction(unsigned char command)
+{
+ LCD_RS = 0; // RS low : Instruction
+ LCDPORT = command;
+ LCD_EN = 1; // EN High
+ lcd_delay(10);
+ LCD_EN = 0; // EN Low; command sampled at EN falling edge
+ lcd_delay(10);
+}
+void SendData(unsigned char lcddata)
+{
+ LCD_RS = 1; // RS HIGH : DATA
+ LCDPORT = lcddata;
+ LCD_EN = 1; // EN High
+ lcd_delay(10);
+ LCD_EN = 0; // EN Low; data sampled at EN falling edge
+ lcd_delay(10);
+}
+void InitLCD(void)
+{
+ ADCON1 = 0x0F;
+ TRISB = 0x00; //set data port as output
+ TRISAbits.RA0 = 0; //RS pin
+ TRISAbits.RA1 = 0; // EN pin
+ SendInstruction(0x38); //8 bit mode, 2 line,5x7 dots
+ SendInstruction(0x06); // entry mode
+ SendInstruction(0x0C); //Display ON cursor OFF
+ SendInstruction(0x01); //Clear display
+ SendInstruction(0x80); //set address to 1st line
+
+}
+unsigned char *String1 = " Hello ";
+unsigned char *String2 = " World";
+void main(void)
+{
+ ADCON1 = 0x0F;
+ TRISB = 0x00; //set data port as output
+ TRISAbits.RA0 = 0; //RS pin
+ TRISAbits.RA1 = 0; // EN pin
+ SendInstruction(0x38); //8 bit mode, 2 line,5x7 dots
+ SendInstruction(0x06); // entry mode
+ SendInstruction(0x0C); //Display ON cursor OFF
+ SendInstruction(0x01); //Clear display
+ SendInstruction(0x80); //set address to 1st line
+while(*String1)
+{
+ SendData(*String1);
+ String1++;
+}
+SendInstruction(0xC0); //set address to 2nd line
+while(*String2)
+{
+ SendData(*String2);
+ String2++;
+}
+while(1);
+}
+
+MOTAR
+
+
+
+#include <xc.h>
+#include <pic18f4550.h>
+
+// The motor speed is increased from minimum to maximum and then again it will
+// be zero. This process is repeated continuously.
+void main(void) {
+    PR2 = 250;             // Set the period register for desired PWM frequency
+    TRISCbits.TRISC2 = 0;  // Set RC2 pin as output for PWM signal
+    T2CON = 0;             // Clear Timer2 control register
+    TMR2 = 0;              // Clear Timer2 value
+    CCP1CON = 12;          // Configure CCP1 module for PWM mode
+    T2CONbits.TMR2ON = 1;  // Turn on Timer2
+
+    while (1) {
+        CCPR1L = 0;  // Start with motor speed at minimum
+
+        // Increase motor speed from minimum to maximum
+        for (int count = 0; count < 6; count++) {
+            CCPR1L += 50;  // Increase motor speed by increasing duty cycle
+
+            // Delay loop to control the speed change duration
+            for (unsigned int i = 0; i < 1000; i++)
+                for (unsigned int j = 0; j < 1000; j++)
+                    ;
+        }
+    }
+}
+
+// The motor speed is increased from minimum to maximum and then decreased from
+// maximum to minimum. This process is repeated continuously.
+void main2(void) {
+    PR2 = 250;             // Set the period register for desired PWM frequency
+    TRISCbits.TRISC2 = 0;  // Set RC2 pin as output for PWM signal
+    T2CON = 0;             // Clear Timer2 control register
+    TMR2 = 0;              // Clear Timer2 value
+    CCP1CON = 12;          // Configure CCP1 module for PWM mode
+    T2CONbits.TMR2ON = 1;  // Turn on Timer2
+
+    while (1) {
+        CCPR1L = 0;  // Start with motor speed at minimum
+
+        // Increase motor speed from minimum to maximum
+        for (int count = 0; count < 6; count++) {
+            CCPR1L += 50;  // Increase motor speed by increasing duty cycle
+
+            // Delay loop to control the speed change duration
+            for (unsigned int i = 0; i < 1000; i++)
+                for (unsigned int j = 0; j < 1000; j++)
+                    ;
+        }
+
+        // Decrease motor speed from maximum to minimum
+        for (int count = 0; count < 6; count++) {
+            CCPR1L -= 50;  // Decrease motor speed by decreasing duty cycle
+
+            // Delay loop to control the speed change duration
+            for (unsigned int i = 0; i < 1000; i++)
+                for (unsigned int j = 0; j < 1000; j++)
+                    ;
+        }
+    }
+}
+
+
+
+MEMEORY EXCHANGE
+
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<pic18f4550.h>
+
+void main(void){
+    int temp;
+    int source[] = {0x10,0x20,0x30,0x40,0x50};
+    int dest[] = {0x00,0x00,0x00,0x00,0x00};
+    for(int i = 0;i<5;i++){
+        temp = source[i];
+        source[i]=dest[i];
+        dest[i]=temp;
+    }
+}
+
+
+MEMORY TRANSFER
+
+include<stdio.h>
+#include<stdlib.h>
+#include<pic18f4550.h>
+
+void main(void){
+    int source[] = {0x10,0x20,0x30,0x40,0x50};
+    int dest[] = {0x00,0x00,0x00,0x00,0x00};
+    for(int i = 0;i<5;i++){
+        dest[i] = source[i];
+    }
+}
+
+
+
+
