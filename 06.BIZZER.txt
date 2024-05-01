@@ -1,0 +1,30 @@
+#include <pic18f4550.h>
+
+#include <xc.h>
+int c=0;
+void __interrupt() tmr1_isr(){
+    c++;
+    if(c==1000){
+        c=0;
+        LATAbits.LATA5=~LATAbits.LATA5;
+    }
+    TMR1IF=0;
+    TMR1=53536;
+}
+void main(void) {
+    T1CON = 0x80;         
+     
+    TRISAbits.TRISA5=0;
+    LATAbits.LATA5=0;
+    TMR1IE=1;
+    TMR1IF=0;
+    GIE=1;        
+    PEIE=1;
+   
+    
+        TMR1=53536;
+        TMR1ON=1;
+        while(1);
+ 
+    return;
+}
