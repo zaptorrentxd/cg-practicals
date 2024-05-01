@@ -1,18 +1,16 @@
-#include <xc.h>
-#include <pic18f4550.h> // Corrected include
+#include <PIC18F4550.h>  // Correct header for PIC18F4550 microcontroller
 
 void main(void) {
-    int MUL, DIV;
-    
-    MUL = 0 ;
-    DIV = 0;
-    TRISB = 0; //INITIALIZING THESE PORT AS OUTPUT
-    TRISC = 0;
 
-    MUL = 0x08 * 0x01;
-    DIV = 0x08 / 0x01;
+    int num1 = 0x10;
+    int num2 = 0x01;
+    int result = 0;
 
-    PORTB = MUL;
-    PORTC = DIV;
-    return;
+    // Loop iterates num2 times (16 times in this case)
+    for (int i = 0; i < num2; i++) {
+        result += num1;
+    }
+
+    TRISB = 0; // Set Port B as output for displaying the result
+    PORTB = result; // Output the result to Port B
 }
