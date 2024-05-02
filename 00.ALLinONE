@@ -15,6 +15,60 @@ void main(void){
     PORTB=sum;
 }
 
+mul
+#include <PIC18F4550.h>  // Correct header for PIC18F4550 microcontroller
+
+void main(void) {
+
+    int num1 = 0x10;
+    int num2 = 0x01;
+    int result = 0;
+
+    // Loop iterates num2 times (16 times in this case)
+    for (int i = 0; i < num2; i++) {
+        result += num1;
+    }
+
+    TRISB = 0; // Set Port B as output for displaying the result
+    PORTB = result; // Output the result to Port B
+}
+
+
+
+SORTING
+#include <PIC18F4550.h>
+#include <stdio.h>
+
+
+void main(void) {
+
+    int arr[] = {4, 3, 6};
+    int temp;
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = i + 1; j < 3; j++) {
+            if (arr[i] > arr[j]) {
+                temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+    }
+
+    TRISB = 0;
+    PORTA = arr[0];
+    PORTB = arr[1];
+    PORTC = arr[2];
+
+
+
+
+
+}
+
+
+
+
 BUZZER
 #include <pic18f4550.h>
 
@@ -47,6 +101,9 @@ void main(void) {
     return;
 }
 
+
+
+
 LED
 
 
@@ -63,7 +120,7 @@ void delay(unsigned int time) {
 
 void main(void) {
     TRISB = 0x00;
-    LATB = 0xFF;
+    LATB = 0xFF;	
     while (1) //Loop forever;
     {
         LATB = ~LATB;
@@ -74,8 +131,6 @@ void main(void) {
 
 
 LCD
-
-
 
 #include <pic18f4550.h>
 #include<xc.h>
